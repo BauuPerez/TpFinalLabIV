@@ -147,138 +147,169 @@ const Reservas = () => {
   };
 
   return (
-    <div>
-      <Button sx={{ margin: "20px" }} variant="contained" component={Link} to="/">Volver al inicio</Button>
-      <Typography variant="h6" sx={{ marginTop: 2 }}>
-        Filtrar Reservas
-      </Typography>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
-          <DatePicker
-            label="Fecha"
-            value={fechaFiltro}
-            onChange={(newFecha) => setFechaFiltro(newFecha)}
-            renderInput={(params) => <TextField {...params} />}
-          />
-          <TextField
-            label="ID de Cancha"
-            value={filtroCanchaId}
-            onChange={handleFiltroCanchaIdChange}
-          />
-          <Button variant="contained" color="primary" onClick={fetchReservasFiltradas}>
-            Filtrar
-          </Button>
-        </div>
-      </LocalizationProvider>
-      <Button variant="contained" color="primary" onClick={() => openDialog()}>
-        Agregar Nueva Reserva
-      </Button>
-      <Typography variant="h6" sx={{ marginTop: 2 }}>
-        Reservas actuales:
-      </Typography>
-      <Table sx={{ minWidth: 700 }} aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>Fecha</StyledTableCell>
-            <StyledTableCell>Hora</StyledTableCell>
-            <StyledTableCell>Duración</StyledTableCell>
-            <StyledTableCell>Teléfono</StyledTableCell>
-            <StyledTableCell>Contacto</StyledTableCell>
-            <StyledTableCell>Cancha</StyledTableCell>
-            <StyledTableCell>Acciones</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {reservas.length > 0 ? (
-            reservas.map((reserva) => (
-              <StyledTableRow key={reserva.id}>
-                <StyledTableCell>{reserva.fecha}</StyledTableCell>
-                <StyledTableCell>{reserva.hora}</StyledTableCell>
-                <StyledTableCell>{reserva.duracion}</StyledTableCell>
-                <StyledTableCell>{reserva.telefono}</StyledTableCell>
-                <StyledTableCell>{reserva.nombre_contacto}</StyledTableCell>
-                <StyledTableCell>{reserva.cancha_id}</StyledTableCell>
-                <StyledTableCell>
-                  <Button variant="outlined" color="primary" onClick={() => openDialog(reserva)}>Editar</Button>
-                  <Button variant="outlined" color="secondary" onClick={() => handleDeleteReserva(reserva.id)}>Eliminar</Button>
+    <div
+      style={{
+        position: 'relative',
+        width: '100vw',
+        height: '100vh',
+        backgroundImage: 'url("https://cdn.pixabay.com/photo/2018/01/07/18/44/sport-3068038_960_720.jpg")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          backgroundColor: 'rgba(221, 217, 217, 0.85)', // Filtro oscuro
+          zIndex: 1,
+        }}
+      ></div>
+
+      <div
+        style={{
+          position: 'relative',
+          zIndex: 2,
+          color: 'black', // Texto
+        }}
+      >
+        <Button sx={{ margin: "10px" }} variant="contained" component={Link} to="/">
+          VOLVER AL INICIO
+        </Button>
+        <Typography variant="h4" sx={{ marginTop: 2 }}>
+          Filtrar Reservas
+        </Typography>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+            <DatePicker
+              label="Fecha"
+              value={fechaFiltro}
+              onChange={(newFecha) => setFechaFiltro(newFecha)}
+              renderInput={(params) => <TextField {...params} />}
+            />
+            <TextField
+              label="ID de Cancha"
+              value={filtroCanchaId}
+              onChange={handleFiltroCanchaIdChange}
+            />
+            <Button variant="contained" color="primary" onClick={fetchReservasFiltradas}>
+              Filtrar
+            </Button>
+          </div>
+        </LocalizationProvider>
+        <Button sx={{ margin: 1 }} variant="contained" onClick={() => openDialog()}> 
+          Agregar Nueva Reserva
+        </Button>
+        <Typography variant="h4" sx={{ marginTop: 2 }}>
+          Reservas actuales:
+        </Typography>
+        <Table sx={{ minWidth: 500 }} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>Fecha</StyledTableCell>
+              <StyledTableCell>Hora</StyledTableCell>
+              <StyledTableCell>Duración</StyledTableCell>
+              <StyledTableCell>Teléfono</StyledTableCell>
+              <StyledTableCell>Contacto</StyledTableCell>
+              <StyledTableCell>Cancha</StyledTableCell>
+              <StyledTableCell>Acciones</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {reservas.length > 0 ? (
+              reservas.map((reserva) => (
+                <StyledTableRow key={reserva.id}>
+                  <StyledTableCell>{reserva.fecha}</StyledTableCell>
+                  <StyledTableCell>{reserva.hora}</StyledTableCell>
+                  <StyledTableCell>{reserva.duracion}</StyledTableCell>
+                  <StyledTableCell>{reserva.telefono}</StyledTableCell>
+                  <StyledTableCell>{reserva.nombre_contacto}</StyledTableCell>
+                  <StyledTableCell>{reserva.cancha_id}</StyledTableCell>
+                  <StyledTableCell>
+                    <Button variant="outlined" color="primary" onClick={() => openDialog(reserva)}>Editar</Button>
+                    <Button variant="outlined" color="secondary" onClick={() => handleDeleteReserva(reserva.id)}>Eliminar</Button>
+                  </StyledTableCell>
+                </StyledTableRow>
+              ))
+            ) : (
+              <StyledTableRow>
+                <StyledTableCell colSpan={7} align="center">
+                  No se encontraron reservas.
                 </StyledTableCell>
               </StyledTableRow>
-            ))
-          ) : (
-            <StyledTableRow>
-              <StyledTableCell colSpan={7} align="center">
-                No se encontraron reservas para los criterios seleccionados.
-              </StyledTableCell>
-            </StyledTableRow>
-          )}
-        </TableBody>
-      </Table>
-      <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
-        <DialogTitle>{reservaToEdit ? 'Modificar Reserva' : 'Agregar Nueva Reserva'}</DialogTitle>
-        <DialogContent>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <DatePicker
-                  label="Fecha"
-                  value={fechaFormulario}
-                  onChange={setFechaFormulario}
-                  renderInput={(params) => <TextField {...params} fullWidth />}
-                />
+            )}
+          </TableBody>
+        </Table>
+        <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}>
+          <DialogTitle>{reservaToEdit ? 'Modificar Reserva' : 'Agregar Nueva Reserva'}</DialogTitle>
+          <DialogContent>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <DatePicker
+                    label="Fecha"
+                    value={fechaFormulario}
+                    onChange={setFechaFormulario}
+                    renderInput={(params) => <TextField {...params} fullWidth />}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Hora"
+                    type="time"
+                    value={hora}
+                    onChange={handleHoraChange}
+                    fullWidth
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Duración (horas)"
+                    value={duracion}
+                    onChange={handleDuracionChange}
+                    fullWidth
+                    type="number"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Teléfono"
+                    value={telefono}
+                    onChange={handleTelefonoChange}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Nombre de Contacto"
+                    value={nombreContacto}
+                    onChange={handleNombreContactoChange}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="ID de Cancha"
+                    value={canchaId}
+                    onChange={handleCanchaIdChange}
+                    fullWidth
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="Hora"
-                  type="time"
-                  value={hora}
-                  onChange={handleHoraChange}
-                  fullWidth
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="Duración (horas)"
-                  value={duracion}
-                  onChange={handleDuracionChange}
-                  fullWidth
-                  type="number"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="Teléfono"
-                  value={telefono}
-                  onChange={handleTelefonoChange}
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="Nombre de Contacto"
-                  value={nombreContacto}
-                  onChange={handleNombreContactoChange}
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="ID de Cancha"
-                  value={canchaId}
-                  onChange={handleCanchaIdChange}
-                  fullWidth
-                />
-              </Grid>
-            </Grid>
-          </LocalizationProvider>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setIsDialogOpen(false)} color="secondary">Cancelar</Button>
-          <Button onClick={handleReservaSubmit} color="primary">Guardar</Button>
-        </DialogActions>
-      </Dialog>
+            </LocalizationProvider>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setIsDialogOpen(false)} color="secondary">Cancelar</Button>
+            <Button onClick={handleReservaSubmit} color="primary">Guardar</Button>
+          </DialogActions>
+        </Dialog>
+      </div>
     </div>
   );
 };
