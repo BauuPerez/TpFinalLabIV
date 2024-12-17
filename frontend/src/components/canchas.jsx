@@ -53,6 +53,7 @@ const Canchas = () => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
 
+  // Función para obtener las canchas
   const fetchCanchas = async () => {
     try {
       const response = await api.get("/canchas/");
@@ -62,6 +63,7 @@ const Canchas = () => {
     }
   };
 
+  // Función para agregar una nueva cancha
   const handleAddCancha = async () => {
     if (!nombre || !id || techada === null) {
       setMessage("Todos los campos son obligatorios");
@@ -76,7 +78,7 @@ const Canchas = () => {
     };
 
     try {
-      await api.post("/canchas/", nuevaCancha); // Asumiendo que la API permite crear canchas con POST
+      await api.post("/canchas/", nuevaCancha);
       setMessage("Cancha agregada correctamente");
       setOpen(true);
       fetchCanchas(); // Refrescar la lista de canchas
@@ -90,10 +92,28 @@ const Canchas = () => {
     }
   };
 
+  // Función para eliminar una cancha
+  const handleDeleteCancha = async (canchaId) => {
+    if (window.confirm("¿Estás seguro de que deseas eliminar esta cancha?")) {
+      try {
+        await api.delete(`/canchas/${canchaId}`);
+        setMessage("Cancha eliminada correctamente");
+        setOpen(true);
+        fetchCanchas(); // Refrescar la lista de canchas después de eliminar
+      } catch (error) {
+        setMessage("Error al eliminar la cancha, debido a que esta reservada");
+        setOpen(true);
+        console.error("Error al eliminar la cancha, debido a que esta reservada:", error);
+      }
+    }
+  };
+
+  // Obtener canchas al cargar el componente
   useEffect(() => {
     fetchCanchas();
   }, []);
 
+  // Cerrar el Snackbar
   const handleCloseSnackbar = () => {
     setOpen(false);
   };
@@ -114,14 +134,13 @@ const Canchas = () => {
         padding: 0,
       }}
     >
-      {/* El contenido con transparencia */}
       <Box
         sx={{
           width: "100%",
           height: "100%",
-          backgroundColor: "rgba(170, 170, 170, 0.85)", // Blanco semi-transparente
+          backgroundColor: "rgba(170, 170, 170, 0.85)", // Fondo semi-transparente
           padding: 4,
-          boxSizing: "border-box", // Asegura que el padding no genere desbordamiento
+          boxSizing: "border-box",
           overflowY: "auto",
         }}
       >
@@ -163,6 +182,7 @@ const Canchas = () => {
                 <StyledTableCell>NOMBRE DE LA CANCHA</StyledTableCell>
                 <StyledTableCell>TECHADA</StyledTableCell>
                 <StyledTableCell>ID</StyledTableCell>
+                <StyledTableCell>ACCIÓN</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -171,6 +191,15 @@ const Canchas = () => {
                   <StyledTableCell>{cancha.nombre}</StyledTableCell>
                   <StyledTableCell>{cancha.techada ? "Techada" : "No Techada"}</StyledTableCell>
                   <StyledTableCell>{cancha.id}</StyledTableCell>
+                  <StyledTableCell>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={() => handleDeleteCancha(cancha.id)}
+                    >
+                      Eliminar
+                    </Button>
+                  </StyledTableCell>
                 </StyledTableRow>
               ))}
             </TableBody>

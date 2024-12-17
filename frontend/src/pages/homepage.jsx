@@ -7,7 +7,7 @@ const HomePage = () => {
   return (
     <Box
       sx={{
-        backgroundImage: 'url(https://cdn.pixabay.com/photo/2018/07/22/08/49/tennis-3554019_640.jpg)',
+        backgroundImage: 'url(https://cdn.pixabay.com/photo/2014/06/06/19/03/tennis-363666_640.jpg)',
         backgroundSize: 'cover', // Asegura que la imagen cubra toda la pantalla
         backgroundPosition: 'center', // Centra la imagen
         backgroundRepeat: 'no-repeat', // Evita que la imagen se repita
