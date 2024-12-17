@@ -51,6 +51,7 @@ const Canchas = () => {
   const [techada, setTechada] = useState(null);
   const [id, setId] = useState("");
   const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
 
   const fetchCanchas = async () => {
     try {
@@ -61,9 +62,41 @@ const Canchas = () => {
     }
   };
 
+  const handleAddCancha = async () => {
+    if (!nombre || !id || techada === null) {
+      setMessage("Todos los campos son obligatorios");
+      setOpen(true);
+      return;
+    }
+
+    const nuevaCancha = {
+      nombre,
+      techada,
+      id,
+    };
+
+    try {
+      await api.post("/canchas/", nuevaCancha); // Asumiendo que la API permite crear canchas con POST
+      setMessage("Cancha agregada correctamente");
+      setOpen(true);
+      fetchCanchas(); // Refrescar la lista de canchas
+      setNombre("");
+      setTechada(null);
+      setId("");
+    } catch (error) {
+      setMessage("Error al agregar la cancha");
+      setOpen(true);
+      console.error("Error al agregar la cancha:", error);
+    }
+  };
+
   useEffect(() => {
     fetchCanchas();
   }, []);
+
+  const handleCloseSnackbar = () => {
+    setOpen(false);
+  };
 
   return (
     <Box
@@ -119,7 +152,7 @@ const Canchas = () => {
               <FormControlLabel value="false" control={<Radio />} label="No Techada" />
             </RadioGroup>
           </FormControl>
-          <Button variant="contained" onClick={() => console.log("Agregar cancha")}>
+          <Button variant="contained" onClick={handleAddCancha}>
             Agregar
           </Button>
         </Stack>
@@ -143,6 +176,23 @@ const Canchas = () => {
             </TableBody>
           </Table>
         </TableContainer>
+
+        <Snackbar
+          open={open}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackbar}
+          message={message}
+          action={
+            <IconButton
+              size="small"
+              aria-label="close"
+              color="inherit"
+              onClick={handleCloseSnackbar}
+            >
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          }
+        />
       </Box>
     </Box>
   );

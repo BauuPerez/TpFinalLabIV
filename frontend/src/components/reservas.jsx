@@ -157,17 +157,18 @@ const Reservas = () => {
         backgroundPosition: 'center',
       }}
     >
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundColor: 'rgba(221, 217, 217, 0.85)', // Filtro oscuro
-          zIndex: 1,
-        }}
-      ></div>
+    <div
+  style={{
+    position: 'fixed', 
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(221, 217, 217, 0.85)', // Filtro
+    zIndex: 1,
+  }}
+  ></div>
+
 
       <div
         style={{
