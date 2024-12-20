@@ -78,24 +78,29 @@ def modify_reserva(db: Session, reserva_id: int, reserva_data: ReservaCreate):
     return reserva
 
 
-def verificar_reserva(db: Session, reserva: ReservaCreate):
+def verificar_reserva(db: Session, reserva: ReservaCreate, reserva_id: int = None):
+    
     inicio_minutos = reserva.hora.hour * 60 + reserva.hora.minute
     fin_minutos = inicio_minutos + reserva.duracion * 60
     
-    
-    
+
     existing_reserva = db.query(Reserva).filter(
-        Reserva.cancha_id == reserva.cancha_id,        
+        Reserva.cancha_id == reserva.cancha_id,
+        Reserva.fecha == reserva.fecha,
         or_(
             and_(
                 (extract('hour', Reserva.hora) * 60 + extract('minute', Reserva.hora)) < fin_minutos,
                 (extract('hour', Reserva.hora) * 60 + extract('minute', Reserva.hora) + Reserva.duracion * 60) > inicio_minutos
             )
         )
-    ).first()
+    )
+    
 
-    return existing_reserva
+    if existing_reserva:
+        existing_reserva = existing_reserva.filter(Reserva.id != reserva_id)
+        return existing_reserva.first()
 
+    return None
 
 def filtrar_reserva(db:Session, cancha_id:int,fecha:date):
     db_reservas=db.query(Reserva).filter(Reserva.cancha_id==cancha_id,Reserva.fecha==fecha).all()

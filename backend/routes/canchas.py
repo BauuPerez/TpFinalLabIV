@@ -1,9 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException,status
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.db.session import SessionLocal
-from crud.canchas import create_cancha, verificar_cancha
+from crud.canchas import create_cancha, verificar_cancha, get_cancha, get_cancha_id, delete_cancha
 from schemas.canchas import CanchaCreate, Cancha
-from crud.canchas import get_cancha,get_cancha_id,delete_cancha
 
 router = APIRouter()
 
@@ -47,8 +46,35 @@ def create_cancha_route(canchas: CanchaCreate, db: Session = Depends(get_db)):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Hubo un error al agregar la cancha."
         )
-
-
-router.delete("/canchas/{cancha_id}", response_model=Cancha, tags=["canchas"])
+    
+    
+@router.delete("/canchas/{cancha_id}", response_model=Cancha, tags=["canchas"])
 def delete_cancha_route(cancha_id: int, db: Session = Depends(get_db)):
-    return delete_cancha(db, cancha_id)
+    try:
+        # Verifica que el registro existe
+        cancha = get_cancha_id(db, cancha_id)
+        if not cancha:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Cancha no encontrada"
+            )
+
+        # Log para saber si pasa a la función de eliminación
+        print(f"Intentando eliminar la cancha con ID: {cancha_id}")
+
+        deleted_cancha = delete_cancha(db, cancha_id)
+
+        # Log si la eliminación fue exitosa
+        print(f"Cancha con ID: {cancha_id} eliminada exitosamente")
+
+        return deleted_cancha
+
+    except Exception as e:
+        print(f"Error al intentar eliminar la cancha: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error al intentar borrar la cancha: {str(e)}"
+        )
+
+
+
