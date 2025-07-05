@@ -101,7 +101,7 @@ const Canchas = () => {
         setOpen(true);
         fetchCanchas(); // Refrescar la lista de canchas después de eliminar
       } catch (error) {
-        setMessage("Error al eliminar la cancha, debido a que esta reservada");
+        setMessage("Error al eliminar la cancha, debido a que ya esta reservada");
         setOpen(true);
         console.error("Error al eliminar la cancha, debido a que esta reservada:", error);
       }
